@@ -1,0 +1,21 @@
+# Environment files — never commit real secrets
+.env
+.env.local
+.env.production
+Backend/.env
+View/.env
+View/.env.local
+
+# Node modules
+node_modules/
+Backend/node_modules/
+View/node_modules/
+
+# Build output
+dist/
+build/
+View/dist/
+
+# Uploads
+uploads/
+data/
