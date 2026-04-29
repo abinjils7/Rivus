@@ -40,10 +40,11 @@ const auth = (req, res, next) => {
         JWT_SECRET,
         { expiresIn: "15m" }
       );
+      const isProduction = process.env.NODE_ENV === "production";
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
         path: "/",
         maxAge: 15 * 60 * 1000, // 15 minutes
       });

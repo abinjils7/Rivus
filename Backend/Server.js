@@ -4,9 +4,17 @@ const cors = require("cors");
 const connectDB = require("./DataBase/Db");
 const cookieParser = require("cookie-parser");
 
-connectDB();
-
 const app = express();
+
+// Connect to DB lazily on first request (serverless-safe)
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ message: "Database connection failed" });
+  }
+});
 
 // Allow localhost in dev and the deployed Vercel URL in production
 const allowedOrigins = [
@@ -36,7 +44,7 @@ app.use(express.json());
 const userRoutes = require("./Routes/userRoutes");
 const carRoutes = require("./Routes/carRoutes");
 const cartRoutes = require("./Routes/CartRoutes");
-const orderRoutes = require("./routes/orderRoutes");
+const orderRoutes = require("./Routes/orderRoutes");
 const authroutes = require("./Routes/Login");
 const wishlistRoutes = require("./Routes/WishlistRoutes");
 const AdminRotes = require("./Routes/AdminRoutes");

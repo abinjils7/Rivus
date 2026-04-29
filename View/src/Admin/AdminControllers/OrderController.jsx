@@ -1,4 +1,5 @@
 import axios from "axios";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import React, { createContext, useState } from "react";
 
 import { toast } from "sonner";
@@ -15,12 +16,11 @@ export default function OrderController({ children }) {
       });
       throw new Error("Order ID and status must both be provided");
     }
-
     console.log(" Sending PATCH with:", { id, status });
 
     try {
       const res = await axios.patch(
-        "http://localhost:5000/Admin",
+        `${BASE_URL}/Admin`,
         { id, status },
         {
           headers: { "Content-Type": "application/json" },
@@ -39,12 +39,11 @@ export default function OrderController({ children }) {
       throw err;
     }
   }
-
   const [orders, setOrders] = useState([]);
 
   async function fetchOrders() {
     try {
-      const res = await axios.get(`http://localhost:5000/Admin/order`, {
+      const res = await axios.get(`${BASE_URL}/Admin/order`, {
         withCredentials: true,
       });
       setOrders(res.data);

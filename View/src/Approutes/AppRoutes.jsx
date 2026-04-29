@@ -76,7 +76,6 @@ function AppRoutes() {
         element={
           <ProtectedRoute userOnly={true}>
             <Cart />
-            //{" "}
           </ProtectedRoute>
         }
       />
@@ -104,7 +103,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      ------------------------ADMIN---------------------------
+      {/* ADMIN ROUTES */}
       <Route
         path="/admin"
         element={

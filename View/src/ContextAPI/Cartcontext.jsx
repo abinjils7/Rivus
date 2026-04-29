@@ -3,6 +3,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import AuthContext from "./Authcontext";
 
 export const CartContext = createContext();
@@ -23,7 +24,7 @@ export const CartProvider = ({ children }) => {
 
     const fetchCart = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/cart/${user.id}`, {
+        const res = await axios.get(`${BASE_URL}/cart/${user.id}`, {
           withCredentials: true,
         });
         setCart(Array.isArray(res.data.cart) ? res.data.cart : []);
@@ -43,7 +44,7 @@ export const CartProvider = ({ children }) => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/cart",
+        `${BASE_URL}/cart`,
         {
           userId: user.id,
           productId: product._id,
@@ -72,7 +73,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const clearCart = async () => {
-    axios.delete("http://localhost:5000/cart/clear-cart", {
+    axios.delete(`${BASE_URL}/cart/clear-cart`, {
       data: { userId: user.id },
       withCredentials: true, // ✅ added
     });
@@ -83,7 +84,7 @@ export const CartProvider = ({ children }) => {
     if (!user) return toast.error("Please login first");
 
     try {
-      await axios.delete(`http://localhost:5000/cart`, {
+      await axios.delete(`${BASE_URL}/cart`, {
         data: { userId: user.id, productId },
         withCredentials: true, // ✅ added
       });
@@ -104,7 +105,7 @@ export const CartProvider = ({ children }) => {
       const newQuantity = Math.max(1, (item.quantity || 1) + change);
 
       await axios.put(
-        "http://localhost:5000/cart",
+        `${BASE_URL}/cart`,
         {
           userId: user.id,
           productId,

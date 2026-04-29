@@ -1,4 +1,5 @@
 import axios from "axios";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import React, { createContext, useState } from "react";
 import { UserAPI } from "../../Api";
 import { toast } from "sonner";
@@ -19,7 +20,7 @@ export default function UserControlers({ children }) {
 
   async function fetchUser() {
     try {
-      const result = await axios.get(`http://localhost:5000/Admin`, {
+      const result = await axios.get(`${BASE_URL}/Admin`, {
         withCredentials: true, //  added to include cookies
       });
       setUsers(result.data);
@@ -32,7 +33,7 @@ export default function UserControlers({ children }) {
     try {
       const newstate = !currentstate;
       await axios.patch(
-        `http://localhost:5000/Admin/user`,
+        `${BASE_URL}/Admin/user`,
         { status: newstate, _id: _id },
         { withCredentials: true } //  added here too
       );
@@ -49,7 +50,7 @@ export default function UserControlers({ children }) {
   async function deleteuserDB(userId) {
     console.log("sending to remove user", userId);
     try {
-      await axios.delete(`http://localhost:5000/Admin/user`, {
+      await axios.delete(`${BASE_URL}/Admin/user`, {
         data: { userId: userId },
         withCredentials: true, // added for cookie auth
       });

@@ -2,6 +2,7 @@
 import React, { createContext } from "react";
 import axios from "axios";
 import { Toaster, toast } from "sonner";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export const ProductContext = createContext();
 
@@ -9,7 +10,7 @@ export default function ProductControlers({ children }) {
   async function deleteProductDB(productId) {
     try {
       console.log("from the funtion remove", productId);
-      await axios.delete(`http://localhost:5000/Admin`, {
+      await axios.delete(`${BASE_URL}/Admin`, {
         data: { productId },
         withCredentials: true, // ✅ added to send cookies
       });
@@ -24,7 +25,7 @@ export default function ProductControlers({ children }) {
 
   async function addCarsDB(formdata) {
     try {
-      await axios.post("http://localhost:5000/Admin", formdata, {
+      await axios.post(`${BASE_URL}/Admin`, formdata, {
         withCredentials: true, // ✅ added here too
       });
       toast.success("Product added successfully");
@@ -39,12 +40,11 @@ export default function ProductControlers({ children }) {
     console.log("recevd data for update", updatedData);
     try {
       const res = await axios.patch(
-        `http://localhost:5000/Admin/product`,
-        updatedData,
-        productId,
+        `${BASE_URL}/Admin/product`,
+        { ...updatedData, productId },
         {
           headers: { "Content-Type": "application/json" },
-          withCredentials: true, // ✅ already correct, kept here
+          withCredentials: true,
         }
       );
       toast.success("Product updated!");

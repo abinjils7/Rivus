@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useMemo } from "react";
 import axios from "axios";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const CarContext = createContext();
 
@@ -19,7 +20,7 @@ export const CarProvider = ({ children }) => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://localhost:5000/cars?page=${currentPage}&limit=${pageSize}`,
+          `${BASE_URL}/cars?page=${currentPage}&limit=${pageSize}`,
           { withCredentials: true }
         );
         if (Array.isArray(response.data.data)) {

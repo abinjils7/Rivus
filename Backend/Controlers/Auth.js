@@ -75,27 +75,25 @@ const Login = async (req, res) => {
       { expiresIn: process.env.JWT_REFRESH_EXPIRE_IN || "7d" }
     );
 
-    User.refreshToken = refreshToken;
+    const isProduction = process.env.NODE_ENV === "production";
+
+    user.refreshToken = refreshToken;
     await user.save();
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false,
-      samesite: "none",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       path: "/",
-      maxAge: 7 * 24 * 60 * 60,
-      expiresIn: 7 * 24 * 60 * 60,
-      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
     });
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "non",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       path: "/",
-      maxAge: 60,
-      expiresIn: 60,
-      sameSite: "lax",
+      maxAge: 60 * 60 * 1000, // 1 hour in ms
     });
 
     res.status(200).json({

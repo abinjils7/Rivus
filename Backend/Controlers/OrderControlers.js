@@ -108,7 +108,7 @@ const changeOrderStatus = async (req, res) => {
   try {
     const { id, newStatus } = req.body;
 
-    if (!id || !isValidObjectId(id)) {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return res
         .status(400)
         .json({ message: "Please provide a valid order id." });

@@ -135,7 +135,7 @@ const clearCart = async (req, res) => {
   const cleardCart = await Cart.deleteMany({ userId });
   res
     .status(200)
-    .json({ message: "cleard the cart after order processed" }, cleardCart);
+    .json({ message: "cleard the cart after order processed", cleardCart });
 };
 
 module.exports = {

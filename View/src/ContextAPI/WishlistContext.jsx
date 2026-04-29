@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 import AuthContext from "./Authcontext";
 
 const WishlistContext = createContext();
@@ -17,7 +18,7 @@ export const WishlistProvider = ({ children }) => {
       try {
         const userId = user.id;
         const res = await axios.get(
-          `http://localhost:5000/wishlist/${userId}`,
+          `${BASE_URL}/wishlist/${userId}`,
           {
             withCredentials: true,
           }
@@ -48,7 +49,7 @@ export const WishlistProvider = ({ children }) => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/wishlist",
+        `${BASE_URL}/wishlist`,
         {
           userId: user.id,
           productId: product._id,
@@ -68,7 +69,7 @@ export const WishlistProvider = ({ children }) => {
     if (!user) return toast.error("Login required");
     console.log("id receved for remove from wishlist", productId);
     try {
-      await axios.delete("http://localhost:5000/wishlist", {
+      await axios.delete(`${BASE_URL}/wishlist`, {
         data: { productId },
         withCredentials: true,
       });

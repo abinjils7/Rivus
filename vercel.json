@@ -1,16 +1,7 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/index.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "View/package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
-    }
-  ],
+  "installCommand": "npm install --prefix Backend && npm install --prefix View",
+  "buildCommand": "cd View && npm run build",
+  "outputDirectory": "View/dist",
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -18,11 +9,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/View/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/View/index.html"
+      "destination": "/index.html"
     }
   ]
 }

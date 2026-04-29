@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { toast } from "sonner";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const AuthContext = createContext();
 
@@ -22,7 +23,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (newUser) => {
     try {
-      const res = await axios.post("http://localhost:5000/Register", newUser, {
+      const res = await axios.post(`${BASE_URL}/Register`, newUser, {
         withCredentials: true, //  added
       });
       setUser(res.data);
@@ -36,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   const login1 = async (email, password) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/login",
+        `${BASE_URL}/login`,
         { email, password },
         { withCredentials: true } //  added
       );
@@ -56,14 +57,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    if (user && user.role === "admin") {
-      // Do admin-specific logout action (e.g., navigate)
-      navigate("/login");
-    }
     setUser(null);
     localStorage.removeItem("user");
     toast.info("Logged out!");
+    navigate("/");
   };
 
   const changePassword = async (currentpassword, newpassword, email) => {
@@ -75,7 +72,7 @@ export const AuthProvider = ({ children }) => {
         email
       );
       const response = await axios.patch(
-        "http://localhost:5000/changepassword",
+        `${BASE_URL}/changepassword`,
         { currentpassword, newpassword, email },
         { withCredentials: true } //  added
       );
