@@ -24,7 +24,7 @@ function MyOrders() {
     setLoading(true);
 
     axios
-      .get(`http://localhost:5000/orders/${userId}`, {
+      .get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}//orders/${userId}`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -185,7 +185,7 @@ function MyOrders() {
                         </p>
                       </div>
 
-                      <div className="text-right">
+                      <div className="text-left sm:text-right mt-4 sm:mt-0">
                         <p className="text-2xl font-bold text-gray-900">
                           ₹{order.totalPrice || order.total}
                         </p>
@@ -199,9 +199,9 @@ function MyOrders() {
                     {order.items.map((item, idx) => (
                       <div
                         key={item._id || idx}
-                        className="flex items-start gap-4 py-4 border-b last:border-b-0"
+                        className="flex flex-col sm:flex-row sm:items-start gap-4 py-4 border-b last:border-b-0"
                       >
-                        <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+                        <div className="w-full sm:w-20 h-40 sm:h-20 bg-gray-100 rounded-lg overflow-hidden shrink-0">
                           <img
                             src={
                               item.productId?.image || "/placeholder-image.jpg"
@@ -248,7 +248,7 @@ function MyOrders() {
                           </div>
                         </div>
 
-                        <div className="text-right">
+                        <div className="text-left sm:text-right mt-2 sm:mt-0">
                           <p className="text-lg font-semibold text-gray-900">
                             ₹
                             {(

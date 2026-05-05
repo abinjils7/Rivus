@@ -11,8 +11,7 @@ export const CarProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
-  const pageSize = 3; // Always use this limit for pagination
+  const pageSize = 12; // Always use this limit for pagination
 
   // Fetch paginated cars from API whenever page changes
   useEffect(() => {

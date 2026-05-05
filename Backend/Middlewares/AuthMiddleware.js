@@ -32,7 +32,7 @@ const auth = (req, res, next) => {
     try {
       const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET_KEY);
       req.user = decoded;
-      console.log("Refresh token valid:", decoded);
+      console.log("Refresh token valid:", decoded);   
 
       // Generate new access token
       const accessToken = jwt.sign(
@@ -40,11 +40,10 @@ const auth = (req, res, next) => {
         JWT_SECRET,
         { expiresIn: "15m" }
       );
-      const isProduction = process.env.NODE_ENV === "production";
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? "none" : "lax",
+        secure: false,
+        sameSite: "lax",
         path: "/",
         maxAge: 15 * 60 * 1000, // 15 minutes
       });

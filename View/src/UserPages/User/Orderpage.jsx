@@ -16,7 +16,7 @@ function OrderPage() {
   const [orderId, setOrderId] = useState(null);
 
   const totalPrice = cart.reduce(
-    (sum, item) => sum + item.productId.price * item.quantity,
+    (sum, item) => sum + Math.min(item.productId.price * 0.01, 3000) * item.quantity,
     0
   );
   const totalQuantity = cart.length;
@@ -257,9 +257,9 @@ function OrderPage() {
                     </div>
                     <div className="text-right">
                       <p className="font-medium text-gray-900">
-                        ₹
+                        $
                         {(
-                          item.productId.price * item.quantity
+                          item.productId.price * 0.01 * item.quantity
                         ).toLocaleString()}
                       </p>
                     </div>
@@ -271,7 +271,7 @@ function OrderPage() {
                   Total
                 </span>
                 <span className="text-lg font-bold text-gray-900">
-                  ₹{totalPrice.toLocaleString()}
+                  ${totalPrice.toLocaleString()}
                 </span>
               </div>
             </div>
@@ -518,7 +518,7 @@ function OrderPage() {
                   >
                     {isProcessing
                       ? "Processing..."
-                      : `Pay ₹${totalPrice.toLocaleString()}`}
+                      : `Pay $${totalPrice.toLocaleString()}`}
                   </button>
                 </div>
               </form>

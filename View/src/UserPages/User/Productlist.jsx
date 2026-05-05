@@ -59,12 +59,12 @@ const Productlist = () => {
             placeholder="Search cars..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="p-3 w-64 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all duration-200"
+            className="p-3 w-full sm:w-64 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all duration-200"
           />
           <select
             onChange={(e) => setFilterHP(e.target.value)}
             value={filterHP}
-            className="p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all duration-200 appearance-none w-40"
+            className="p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all duration-200 appearance-none w-full sm:w-40"
           >
             <option value="">All HP</option>
             <option value="300">300+ HP</option>
@@ -75,7 +75,7 @@ const Productlist = () => {
           <select
             onChange={(e) => setSort(e.target.value)}
             value={sort}
-            className="p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all duration-200 appearance-none w-40"
+            className="p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black transition-all duration-200 appearance-none w-full sm:w-40"
           >
             <option value="">Sort By</option>
             <option value="name-asc">Name (A - Z)</option>
@@ -87,26 +87,7 @@ const Productlist = () => {
           </select>
         </div>
 
-        {/* Pagination Controls */}
-        <div className="flex justify-center items-center gap-2 my-6">
-          <button
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-            className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-          >
-            Prev
-          </button>
-          <span>
-            Page {page} of {totalPages}
-          </span>
-          <button
-            disabled={page === totalPages}
-            onClick={() => setPage(page + 1)}
-            className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
+
 
         {/* Display grid */}
         {loading ? (
@@ -157,7 +138,7 @@ const Productlist = () => {
                       </span>
                     </div>
                     <p className="text-lg font-semibold text-gray-800">
-                      ₹{Number(car.price).toLocaleString("en-IN")}
+                      ${Math.min(car.price * 0.01, 3000).toLocaleString()} / day
                     </p>
                     <button
                       onClick={() => addToCart(car)}
@@ -169,6 +150,25 @@ const Productlist = () => {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Numbered Pagination at the end */}
+        {!loading && totalPages > 1 && (
+          <div className="flex flex-wrap justify-center items-center gap-2 mt-12 mb-4">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+              <button
+                key={pageNum}
+                onClick={() => setPage(pageNum)}
+                className={`w-10 h-10 flex items-center justify-center rounded-lg font-medium transition-all duration-200 shadow-sm ${
+                  page === pageNum
+                    ? "bg-black text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                {pageNum}
+              </button>
+            ))}
           </div>
         )}
       </div>

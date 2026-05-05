@@ -4,21 +4,15 @@ const cors = require("cors");
 const connectDB = require("./DataBase/Db");
 const cookieParser = require("cookie-parser");
 
-const app = express();
+connectDB();
 
-// Connect to DB lazily on first request (serverless-safe)
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (err) {
-    res.status(500).json({ message: "Database connection failed" });
-  }
-});
+const app = express();
 
 // Allow localhost in dev and the deployed Vercel URL in production
 const allowedOrigins = [
   "http://localhost:5173",
+  "https://rivus-client.vercel.app",
+  "https://rivus-client-qvkfa2gtj-abinjils7s-projects.vercel.app",
   process.env.ALLOWED_ORIGIN,
 ].filter(Boolean);
 
@@ -26,7 +20,12 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // allow requests with no origin (e.g. mobile apps, curl)
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) return callback(null, true);
+
+      const isAllowed = allowedOrigins.includes(origin) || 
+                       /^https:\/\/rivus-client.*\.vercel\.app$/.test(origin);
+
+      if (isAllowed) {
         callback(null, true);
       } else {
         callback(new Error(`CORS: origin ${origin} not allowed`));

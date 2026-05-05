@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   };
-
+  const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
     toast.info("Logged out!");

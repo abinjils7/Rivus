@@ -10,7 +10,7 @@ function Cart() {
   const navigate = useNavigate();
 
   const totalPrice = cart.reduce(
-    (sum, item) => sum + (item.productId?.price || 0) * item.quantity,
+    (sum, item) => sum + Math.min(item.productId?.price * 0.01 || 0, 3000) * item.quantity,
     0
   );
 
@@ -30,13 +30,13 @@ function Cart() {
         cart.map((item) => (
           <div
             key={item._id}
-            className="mb-4 p-4 border border-gray-300 rounded-lg shadow-sm flex gap-4"
+            className="mb-4 p-4 border border-gray-300 rounded-lg shadow-sm flex flex-col sm:flex-row gap-4"
           >
             {item.productId?.image && (
               <img
                 src={item.productId.image}
                 alt={item.productId.name}
-                className="w-32 h-24 object-cover rounded"
+                className="w-full sm:w-32 h-40 sm:h-24 object-cover rounded"
               />
             )}
 
@@ -45,11 +45,11 @@ function Cart() {
                 {item.productId?.brand || item.productId?.name}
               </h3>
               <p className="text-gray-700">
-                Price: ₹{item.productId?.price?.toLocaleString() || 0}
+                Price: ${Math.min(item.productId?.price * 0.01 || 0, 3000).toLocaleString()} / day
               </p>
               <p className="text-gray-700">Qty: {item.quantity}</p>
               <p className="font-medium mt-1">
-                Subtotal: ₹{(item.productId?.price || 0) * item.quantity}
+                Subtotal: ${(Math.min(item.productId?.price * 0.01 || 0, 3000) * item.quantity).toLocaleString()}
               </p>
 
               <div className="flex items-center gap-2 mt-3">
@@ -82,7 +82,7 @@ function Cart() {
       <hr className="my-4" />
       <p className="text-lg">Total Items: {totalQuantity}</p>
       <p className="text-xl font-bold">
-        Total Price: ₹{totalPrice.toLocaleString()}
+        Total Price: ${totalPrice.toLocaleString()}
       </p>
 
       <button

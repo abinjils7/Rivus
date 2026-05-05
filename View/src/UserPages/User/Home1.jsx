@@ -1,158 +1,253 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import Nav from "../Common/Nav";
-import CarCards from "./Luxs";
 import Footer from "../Common/Footer";
-// import { useNavigate } from "react-router-dom";
+import CarContext from "../../ContextAPI/Carcontext";
+import { CartContext } from "../../ContextAPI/Cartcontext";
+import { useNavigate } from "react-router-dom";
 
-export default function HeroSection() {
-  const [currentVideo, setCurrentVideo] = useState(0);
+const Home1 = () => {
+  const { cars, loading } = useContext(CarContext);
+  const { addToCart } = useContext(CartContext);
+  const navigate = useNavigate();
+  const [videoError, setVideoError] = useState(false);
 
-  const videos = [
-    {
-      src: "/videos/bmw.mp4",
-      title: "Welcome To Rivus",
-      description: "Drive beyond expectations — premium performance",
-    },
-    {
-      src: "/videos/lux.mp4",
-      title: "Luxury Redefined",
-      description: "Experience unparalleled comfort and style",
-    },
-    {
-      src: "/videos/m2cs.mp4",
-      title: "Performance Mastered",
-      description: "Power and precision in perfect harmony",
-    },
-  ];
+  const [selectedType, setSelectedType] = React.useState("ALL");
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentVideo((prev) => (prev + 1) % videos.length);
-    }, 5000); // Change video every 5 seconds
+  // Get unique car types for filtering
+  const carTypes = useMemo(() => {
+    const types = new Set(cars.map((car) => car.type));
+    return ["ALL", ...Array.from(types)];
+  }, [cars]);
 
-    return () => clearInterval(interval);
-  }, [videos.length]);
+  // Filter cars based on selected type
+  const filteredCars = useMemo(() => {
+    if (selectedType === "ALL") return cars;
+    return cars.filter((car) => car.type === selectedType);
+  }, [cars, selectedType]);
 
-  const goToVideo = (index) => {
-    setCurrentVideo(index);
-  };
+  // Get unique brands and their counts for the hero cards
+  const brandStats = useMemo(() => {
+    const stats = {};
+    cars.forEach((car) => {
+      stats[car.brand] = (stats[car.brand] || 0) + 1;
+    });
+    return Object.entries(stats)
+      .map(([name, count]) => ({
+        name,
+        count,
+        // Find the first car of this brand to get an image
+        image: cars.find((c) => c.brand === name)?.image,
+      }))
+      .sort((a, b) => b.count - a.count); // Sort by count desc
+  }, [cars]);
 
-  const nextVideo = () => {
-    setCurrentVideo((prev) => (prev + 1) % videos.length);
-  };
+  // Take the top 3 brands for the hero grid
+  const heroBrands = brandStats.slice(0, 3);
 
-  const prevVideo = () => {
-    setCurrentVideo((prev) => (prev - 1 + videos.length) % videos.length);
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <h2>Navbar</h2>
+    <div className="bg-white text-black font-sans">
       <Nav />
 
-      <section className="relative w-full min-h-screen flex items-center justify-center py-8">
-        {/* 90% Width and Height Video Container */}
-        <div className="w-[90vw] h-[90vh] rounded-2xl overflow-hidden shadow-2xl">
-          {/* Video Slides */}
-          {videos.map((video, index) => (
-            <div
-              key={index}
-              className={`absolute top-0 left-0 w-full h-full transition-opacity duration-1000 ${
-                index === currentVideo ? "opacity-100" : "opacity-0"
-              }`}
+      {/* Hero Section */}
+      <main className="relative w-full overflow-hidden">
+        {/* Background Video Container - Using aspect-video to respect original proportions */}
+        <div className="relative w-full aspect-video min-h-[500px] max-h-[800px]">
+          {videoError ? (
+            <div className="absolute inset-0 w-full h-full bg-black" />
+          ) : (
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover"
+              onError={() => setVideoError(true)}
             >
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="absolute top-0 left-0 w-full h-full object-cover"
-              >
-                <source src={video.src} type="video/mp4" />
-                Your browser does not support the video tag
-              </video>
+              <source src="/videos/bmw.mp4" type="video/mp4" />
+            </video>
+          )}
+          {/* Transparent Dark Overlay */}
+          <div className="absolute inset-0 bg-black/30" />
 
-              {/* Overlay Content - Centered */}
-              <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center text-center px-4">
-                <div className="text-center">
-                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white">
-                    {video.title.split(" ")[0]}{" "}
-                    <span className="text-green-400">
-                      {video.title.split(" ").slice(1).join(" ")}
-                    </span>
-                  </h1>
-                  <p className="mt-4 text-white text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto">
-                    {video.description}
-                  </p>
-                  <a
-                    href="/marketplace"
-                    className="mt-6 inline-flex items-center bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 md:px-8 md:py-4 rounded-full transition transform hover:scale-105 text-base md:text-lg"
+          <div className="relative z-10 w-full h-full flex items-center justify-center md:justify-start md:ml-20 ml-0 px-6 md:px-0 text-center md:text-left">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start text-white w-full">
+              <div className="space-y-3 md:space-y-5 flex flex-col items-center md:items-start mt-16 md:mt-20">
+                <p className="text-xs md:text-sm font-bold tracking-[0.2em] uppercase text-gray-300">
+                  PREMIUM CARS. UNFORGETTABLE JOURNEYS.
+                </p>
+                <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold leading-tight tracking-tighter drop-shadow-2xl">
+                  Drive the <br className="hidden md:block" /> Extraordinary
+                </h1>
+                <p className="text-base md:text-lg text-gray-200 max-w-lg leading-relaxed">
+                  Choose from an exclusive collection of <br className="hidden md:block" />
+                  high-performance vehicles and elevate every mile.
+                </p>
+
+                {/* Hero Content Bottom: Grid of 3 Cards + View All Button */}
+                <div className="flex flex-col md:flex-row items-center md:items-end gap-8 w-full max-w-6xl">
+                  {/* Grid of 3 Cards - Hidden on mobile */}
+                  <div className="hidden md:grid grid-cols-1 sm:grid-cols-3 gap-4 flex-grow max-w-2xl">
+                    {heroBrands.slice(0, 3).map((brand, idx) => (
+                      <div
+                        key={idx}
+                        className="relative group cursor-pointer overflow-hidden rounded-[1.5rem] h-40 bg-white/10 backdrop-blur-md border border-white/20 shadow-xl"
+                        onClick={() => navigate(`/marketplace?brand=${brand.name}`)}
+                      >
+                        <img
+                          src={brand.image}
+                          alt={brand.name}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
+                        <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                          <span className="bg-white text-black px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest">
+                            {brand.name}
+                          </span>
+                          <span className="text-[9px] font-black tracking-tighter drop-shadow-lg">
+                            {brand.count} RENTALS
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* View All Button */}
+                  <button
+                    onClick={() => navigate("/marketplace")}
+                    className="group bg-black text-white px-8 py-4 md:py-3 rounded-full font-black text-xs md:text-[10px] tracking-[0.2em] hover:bg-gray-900 transition-all active:scale-95 shadow-2xl flex items-center justify-center gap-3 mb-2"
                   >
-                    Explore Latest Collection
-                  </a>
+                    EXPLORE OUR FLEET
+                    <span className="text-base group-hover:translate-x-2 transition-transform">→</span>
+                  </button>
                 </div>
               </div>
             </div>
-          ))}
-
-          {/* Navigation Arrows */}
-          <button
-            onClick={prevVideo}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-
-          <button
-            onClick={nextVideo}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-
-          {/* Video Indicators */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-            {videos.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToVideo(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentVideo
-                    ? "bg-white scale-125"
-                    : "bg-white/50 hover:bg-white/70"
-                }`}
-              />
-            ))}
           </div>
         </div>
-      </section>
+      </main>
+
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-6 py-20 space-y-32">
+          {/* Middle Section: Premium Meets Performance */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center border-t border-gray-100 pt-16">
+            <div>
+              <h2 className="text-4xl font-bold mb-4 leading-tight">
+                Premium Rentals <br /> Redefined
+              </h2>
+            </div>
+            <div className="flex flex-col items-start md:items-end gap-8 text-left md:text-right">
+              <p className="text-gray-500 max-w-lg text-lg leading-relaxed">
+                Elevate your journey with our world-class rental service. From high-stakes
+                business meetings to grand wedding celebrations, we provide the keys to
+                automotive excellence and an unforgettable driving experience.
+              </p>
+              <button
+                onClick={() => navigate("/marketplace")}
+                className="bg-white text-black border border-black px-8 md:px-12 py-3 md:py-5 rounded-full font-bold text-base md:text-lg hover:bg-black hover:text-white transition-all duration-300 shadow-sm"
+              >
+                RENT NOW
+              </button>
+            </div>
+          </div>
+
+          {/* Fleet Section */}
+          <section>
+            <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-16">
+              <div>
+                <h2 className="text-3xl md:text-5xl font-bold mb-4">The Exclusive Collection</h2>
+                <p className="text-gray-500 text-lg max-w-xl">
+                  We offer our clients the most prestigious vehicles in the world.
+                  Every car in our fleet is meticulously maintained to ensure your
+                  ultimate comfort and performance.
+                </p>
+              </div>
+            </div>
+
+            {/* Filter Categories */}
+            <div className="flex flex-wrap gap-3 mb-12">
+              {carTypes.map((cat, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedType(cat)}
+                  className={`px-6 py-2 rounded-full text-xs font-bold border transition-all uppercase ${selectedType === cat ? "bg-black text-white border-black" : "bg-white text-gray-500 border-gray-200 hover:border-black"
+                    }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Grid of Cars */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {filteredCars.slice(0, 8).map((car) => (
+                <div
+                  key={car._id}
+                  className="group bg-white rounded-3xl p-4 border border-gray-50 hover:shadow-2xl transition-all duration-300 flex flex-col h-full"
+                >
+                  <div className="relative overflow-hidden rounded-2xl h-52 mb-6">
+                    <img
+                      src={car.image}
+                      alt={car.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm text-black">
+                      {car.brand}
+                    </div>
+                  </div>
+
+                  <div className="flex-grow">
+                    <h3 className="text-xl font-bold mb-2 group-hover:text-black transition-colors">
+                      {car.name}
+                    </h3>
+                    <div className="flex gap-2 mb-4">
+                      <span className="bg-gray-50 px-2 py-1 rounded text-[10px] text-gray-400 font-bold uppercase tracking-tighter">
+                        {car.type}
+                      </span>
+                      <span className="bg-gray-50 px-2 py-1 rounded text-[10px] text-gray-400 font-bold uppercase tracking-tighter">
+                        {car.hp} HP
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-50">
+                    <span className="text-xl font-black">
+                      ${Math.min(car.price * 0.01, 3000).toLocaleString()} / day
+                    </span>
+                    <button
+                      onClick={() => addToCart(car)}
+                      className="bg-black text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-gray-800 transition-all active:scale-95"
+                    >
+                      ADD TO CART
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-center mt-20">
+              <button
+                onClick={() => navigate("/marketplace")}
+                className="text-gray-400 hover:text-black font-bold text-sm tracking-widest flex items-center gap-2 transition-all group"
+              >
+                VIEW ALL VEHICLES
+                <span className="group-hover:translate-x-2 transition-transform">→</span>
+              </button>
+            </div>
+          </section>
+        </div>
+      </div>
 
       <Footer />
-      {/* <CarCards /> */}
-    </>
+    </div>
   );
-}
+};
+
+export default Home1;

@@ -83,9 +83,9 @@ function LuxuryLines() {
                     muted
                     loop
                     playsInline
+                    onError={(e) => { e.target.style.display = 'none'; }}
                   >
                     <source src={section.video} type="video/mp4" />
-                    Your browser does not support the video tag.
                   </video>
 
                   {/* Overlay gradient */}

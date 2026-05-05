@@ -65,7 +65,7 @@ const Login = async (req, res) => {
     // console.log("REFRESH KEY:", process.env.JWT_REFRESH_SECRET_KEY);
 
     const accessToken = jwt.sign(
-      { userId: user._id, role: user.role }, // Add what you need here
+      { userId: user._id, role: user.role },
       process.env.JWT_SECRET_KEY,
       { expiresIn: process.env.JWT_EXPIRE_IN || "1h" }
     );
@@ -75,25 +75,23 @@ const Login = async (req, res) => {
       { expiresIn: process.env.JWT_REFRESH_EXPIRE_IN || "7d" }
     );
 
-    const isProduction = process.env.NODE_ENV === "production";
-
     user.refreshToken = refreshToken;
     await user.save();
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
+      secure: false,
+      sameSite: "lax",
       path: "/",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
+      secure: false,
+      sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 1000, // 1 hour in ms
+      maxAge: 60 * 60 * 1000, // 1 hour
     });
 
     res.status(200).json({

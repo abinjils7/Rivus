@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-200 mt-auto w-full">
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section - Full width on mobile, spans 2 columns on larger screens */}
           <div className="col-span-1 lg:col-span-2">
@@ -19,25 +19,25 @@ export default function Footer() {
             <div className="flex space-x-6">
               <a
                 href="#"
-                className="text-gray-400 hover:text-indigo-600 transition duration-300"
+                className="text-gray-400 hover:text-black transition duration-300"
               >
                 Facebook
               </a>
               <a
                 href="#"
-                className="text-gray-400 hover:text-indigo-600 transition duration-300"
+                className="text-gray-400 hover:text-black transition duration-300"
               >
                 Twitter
               </a>
               <a
                 href="#"
-                className="text-gray-400 hover:text-indigo-600 transition duration-300"
+                className="text-gray-400 hover:text-black transition duration-300"
               >
                 Instagram
               </a>
               <a
                 href="#"
-                className="text-gray-400 hover:text-indigo-600 transition duration-300"
+                className="text-gray-400 hover:text-black transition duration-300"
               >
                 LinkedIn
               </a>
@@ -53,7 +53,7 @@ export default function Footer() {
               <li>
                 <a
                   href="/"
-                  className="text-gray-600 hover:text-indigo-600 transition duration-300"
+                  className="text-gray-600 hover:text-black transition duration-300"
                 >
                   Home
                 </a>
@@ -61,7 +61,7 @@ export default function Footer() {
               <li>
                 <a
                   href="/about"
-                  className="text-gray-600 hover:text-indigo-600 transition duration-300"
+                  className="text-gray-600 hover:text-black transition duration-300"
                 >
                   About Us
                 </a>
@@ -69,7 +69,7 @@ export default function Footer() {
               <li>
                 <a
                   href="/marketplace"
-                  className="text-gray-600 hover:text-indigo-600 transition duration-300"
+                  className="text-gray-600 hover:text-black transition duration-300"
                 >
                   Our Collection
                 </a>
@@ -77,7 +77,7 @@ export default function Footer() {
               <li>
                 <a
                   href="/testdrive"
-                  className="text-gray-600 hover:text-indigo-600 transition duration-300"
+                  className="text-gray-600 hover:text-black transition duration-300"
                 >
                   Book Test Drive
                 </a>
@@ -85,7 +85,7 @@ export default function Footer() {
               <li>
                 <a
                   href="/contact"
-                  className="text-gray-600 hover:text-indigo-600 transition duration-300"
+                  className="text-gray-600 hover:text-black transition duration-300"
                 >
                   Contact
                 </a>

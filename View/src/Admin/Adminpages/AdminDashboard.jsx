@@ -32,8 +32,8 @@ export default function AdminDashboard() {
       try {
         setLoading(true);
         const [usersRes, ordersRes] = await Promise.all([
-          axios.get(`http://localhost:5000/Admin`),
-          axios.get(`http://localhost:5000/Admin/order`),
+          axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}//Admin`),
+          axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}//Admin/order`),
         ]);
 
         setUser(usersRes.data);
